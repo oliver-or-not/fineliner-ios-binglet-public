@@ -1,0 +1,2 @@
+#include "../World/dev.xcconfig"
+#include "../BuildType/debug.xcconfig"

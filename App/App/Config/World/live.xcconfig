@@ -1,0 +1,14 @@
+#include "../base.xcconfig"
+
+// 공개된 레포지토리이므로 live 에서도 dev 값을 사용한다.
+
+PRODUCT_BUNDLE_IDENTIFIER = com.fineliner.binglet-dev
+ASSETCATALOG_COMPILER_APPICON_NAME = AppIconDev
+
+GAD_APPLICATION_IDENTIFIER = ca-app-pub-3940256099942544~1458002511 // 구글 샘플 id.
+
+CUSTOM_APP_STORE_APP_ID = 6757226645
+
+CUSTOM_GAME_CENTER_BASIC_GAME_GLOBAL_ALL_TIME_LEADERBOARD_ID = basic_game_global_all_time
+
+CUSTOM_GOOGLE_AD_UNIT_ID_FOR_BASIC_GAME_BANNER_AD = ca-app-pub-3940256099942544/2435281174 // 구글이 제공하는 테스트 전용 단위 id. 배너 광고 전용.
