@@ -8,7 +8,8 @@ import Spectrum
 extension ActiveBingletProcessData.AccumulatedPlacingChoice {
 
     var rotation: QuarterRotation {
-        switch tapCount % 4 {
+        let normalizedCount = ((rotationCount % 4) + 4) % 4
+        return switch normalizedCount {
         case 0:
                 .identity
         case 1:

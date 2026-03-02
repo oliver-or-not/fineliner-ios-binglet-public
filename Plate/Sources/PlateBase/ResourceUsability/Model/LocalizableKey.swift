@@ -14,7 +14,7 @@ package enum LocalizableKey: String.LocalizationValue {
     case basicGamePlateBeforeResetDialogCancelButtonTitle = "basic-game-plate-before-reset-dialog-cancel-button-title"
     case basicGamePlateBeforeResetDialogResetButtonTitle = "basic-game-plate-before-reset-dialog-reset-button-title"
     case basicGamePlateResultDialogTitle = "basic-game-plate-result-dialog-title"
-    case basicGamePlateResultDialogBackButtonTitle = "basic-game-plate-result-dialog-back-button-title"
+    case basicGamePlateResultDialogShareButtonTitle = "basic-game-plate-result-dialog-share-button-title"
     case basicGamePlateResultDialogRestartButtonTitle = "basic-game-plate-result-dialog-restart-button-title"
 
     case basicGameTutorialPlateTutorialGuideDialogGreetingText = "basic-game-tutorial-plate-tutorial-guide-dialog-greeting-text"

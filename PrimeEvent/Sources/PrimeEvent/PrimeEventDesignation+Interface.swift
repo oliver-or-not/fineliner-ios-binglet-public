@@ -54,6 +54,8 @@ public extension PrimeEventDesignation {
             GlobalEntity.PrimeEvent.basicGamePlateGameBoardDragEnded
         case .basicGamePlatePlaceButtonTapped:
             GlobalEntity.PrimeEvent.basicGamePlatePlaceButtonTapped
+        case .basicGamePlateResultDialogShareButtonTapped:
+            GlobalEntity.PrimeEvent.basicGamePlateResultDialogShareButtonTapped
         case .basicGamePlateResultDialogBackButtonTapped:
             GlobalEntity.PrimeEvent.basicGamePlateResultDialogBackButtonTapped
         case .basicGamePlateResultDialogRestartButtonTapped:

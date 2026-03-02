@@ -19,7 +19,7 @@ struct GameBoardGridView: View {
             gameBoardGridDiagonalLinkLayerView
             gameBoardGridNodeLayerView
         }
-        .clipShape(RoundedRectangle(cornerRadius: Constant.gameBoardGridCornerRadius))
+        .clipShape(RoundedRectangle(cornerRadius: Constant.gameBoardGridCornerRadius, style: .circular))
     }
 
     private var gameBoardGridHorizontalLinkLayerView: some View {

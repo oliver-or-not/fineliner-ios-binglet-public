@@ -113,18 +113,19 @@ enum BasicGamePlateConstant {
     )
     static let initialGameBoardBingleEffectViewData: GameBoardBingleEffectViewData? = nil
     static let initialActiveBingletContainerViewData: ActiveBingletContainerViewData? = nil
+    static let initialPlaceButtonContainerViewData: PlaceButtonContainerViewData? = nil
     static let initialBingletActivationViewCount: UInt = 0
     static let initialBingletPlacingViewCount: UInt = 0
     static let initialGameBoardHintViewData: GameBoardHintViewData? = nil
-    static let initialPlaceButtonViewData: PlaceButtonViewData = .disabled
+    static let initialBingletPlacingCandidateViewDataArray: [BingletPlacingCandidateViewData] = []
     static let initialWaitingBingletContainerViewDataArray: [WaitingBingletContainerViewData] = []
     static let initialResultDialogViewData: ResultDialogViewData? = nil
 
     // MARK: - Visual
 
-    static let delayBeforeBingletActivation: TimeInterval = TimeInterval(milliseconds: 420)
+    static let delayBeforeBingletActivation: TimeInterval = TimeInterval(milliseconds: 100)
     static let delayBeforeBingledNodeGathering: TimeInterval = TimeInterval(milliseconds: 200)
-    static let animationDurationOfBingledNodeGathering: TimeInterval = TimeInterval(milliseconds: 1200)
+    static let animationDurationOfBingledNodeGathering: TimeInterval = TimeInterval(milliseconds: 1000)
     static let animationDurationOfGameScoreChanging: TimeInterval = TimeInterval(milliseconds: 200)
     static let deleyBeforeGameFinish: TimeInterval = TimeInterval(milliseconds: 5000)
     static let deleyBeforeShowingResultDialog: TimeInterval = TimeInterval(milliseconds: 2000)
@@ -146,7 +147,7 @@ enum BasicGamePlateConstant {
         }
     )
 
-    static let gameBoardGridCornerRadius: CGFloat = 7
+    static let gameBoardGridCornerRadius: CGFloat = 18
     static let gameBoardGridNodeColor: Color = Color(
         UIColor { trait in
             trait.userInterfaceStyle == .dark
@@ -175,7 +176,7 @@ enum BasicGamePlateConstant {
     static let gameBoardGridBlockedNodeColor: Color = Color(
         UIColor { trait in
             trait.userInterfaceStyle == .dark
-            ? UIColor(Color(hex: "323232"))
+            ? UIColor(Color(hex: "525252"))
             : UIColor(Color(hex: "D2D2D2"))
         }
     )
@@ -257,11 +258,30 @@ enum BasicGamePlateConstant {
             : UIColor(Color(hex: "4069B4"))
         }
     )
+    // animationDurationOfBingledNodeGathering 의 절반 이하여야 한다.
     static let animationDurationOfGameBoardBingleEffectMultiplicationValueAppearing: TimeInterval
-    = TimeInterval(milliseconds: 200)
+    = TimeInterval(milliseconds: 150)
+
+    static let maximalBingletPlacingCandidateShowCount = 4
 
     static let activeBingletContainerPadding: CGFloat = 5
-    static let activeBingletContainerStrokeColor: Color  = Color(hex: "828282")
+    static let activeBingletContainerStrokeColor: Color = Color(hex: "828282")
+    static let activeBingletContainerButtonLinearSize: CGFloat = 40
+    static let activeBingletContainerButtonColor: Color = Color(
+        UIColor { trait in
+            trait.userInterfaceStyle == .dark
+            ? UIColor(Color(hex: "63A75E"))
+            : UIColor(Color(hex: "A4E0A0"))
+        }
+    )
+    static let activeBingletContainerButtonStrokeColor: Color = Color(
+        UIColor { trait in
+            trait.userInterfaceStyle == .dark
+            ? UIColor(Color(hex: "83A75E"))
+            : UIColor(Color(hex: "C4F0C0"))
+        }
+    )
+    static let activeBingletContainerPlaceButtonHighlightColor: Color = DS.PaletteColor.yellow
 
     static let waitingBingletContainerStrokeColor: Color  = Color(
         UIColor { trait in

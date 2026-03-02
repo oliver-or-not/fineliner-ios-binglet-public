@@ -26,6 +26,9 @@ struct WaitingBingletContainerDiagonalLinkView: View {
                 case .slash:
                     Rectangle()
                         .foregroundStyle(Constant.linkColor)
+                        .clipShape(RoundedRectangle(
+                            cornerRadius: Constant.waitingBingletLinkWidth / 2
+                        ))
                         .frame(
                             width: Constant.waitingBingletDiagonalLinkLength,
                             height: Constant.waitingBingletLinkWidth
@@ -34,6 +37,9 @@ struct WaitingBingletContainerDiagonalLinkView: View {
                 case .backslash:
                     Rectangle()
                         .foregroundStyle(Constant.linkColor)
+                        .clipShape(RoundedRectangle(
+                            cornerRadius: Constant.waitingBingletLinkWidth / 2
+                        ))
                         .frame(
                             width: Constant.waitingBingletDiagonalLinkLength,
                             height: Constant.waitingBingletLinkWidth
@@ -42,6 +48,9 @@ struct WaitingBingletContainerDiagonalLinkView: View {
                 case .cross:
                     Rectangle()
                         .foregroundStyle(Constant.linkColor)
+                        .clipShape(RoundedRectangle(
+                            cornerRadius: Constant.waitingBingletLinkWidth / 2
+                        ))
                         .frame(
                             width: Constant.waitingBingletDiagonalLinkLength,
                             height: Constant.waitingBingletLinkWidth
@@ -49,6 +58,9 @@ struct WaitingBingletContainerDiagonalLinkView: View {
                         .rotationEffect(.radians(-(.pi / 4)))
                     Rectangle()
                         .foregroundStyle(Constant.linkColor)
+                        .clipShape(RoundedRectangle(
+                            cornerRadius: Constant.waitingBingletLinkWidth / 2
+                        ))
                         .frame(
                             width: Constant.waitingBingletDiagonalLinkLength,
                             height: Constant.waitingBingletLinkWidth

@@ -38,6 +38,7 @@ struct ActiveBingletContainerVerticalLinkView: View {
                                 endPoint: .trailing
                             )
                         )
+                        .clipShape(RoundedRectangle(cornerRadius: Constant.gameBoardLinkWidth / 2))
                         .frame(
                             width: Constant.gameBoardLinkWidth,
                             height: Constant.gameBoardUnitAreaLinearSize

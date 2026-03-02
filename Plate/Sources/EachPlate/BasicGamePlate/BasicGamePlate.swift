@@ -42,6 +42,8 @@ public protocol BasicGamePlateInterface: GlobalEntity.Plate.Interface, Sendable 
 
     func handleGameBoardTap() async
 
+    func handleClockwiseButtonTap() async
+
     /// - Returns: 활성화된 빙글렛을 배치할 방법이 있는지.
     func handlePlaceButtonTap() async -> Bool
 
@@ -153,11 +155,12 @@ fileprivate final actor BasicGamePlate: NSObject, BasicGamePlateInterface {
         let gameBoardViewData: GameBoardViewData
         let gameBoardBingleEffectViewData: GameBoardBingleEffectViewData?
         let activeBingletContainerViewData: ActiveBingletContainerViewData?
+        let placeButtonContainerViewData: PlaceButtonContainerViewData?
         let bingletActivationViewCount: UInt
         let bingletPlacingViewCount: UInt
         let gameBoardHintViewData: GameBoardHintViewData?
-        let placeButtonViewData: PlaceButtonViewData
         let waitingBingletContainerViewDataArray: [WaitingBingletContainerViewData]
+        let bingletPlacingCandidateViewDataArray: [BingletPlacingCandidateViewData]
         let resultDialogViewData: ResultDialogViewData?
         let isBeforeRestartDialogShown: Bool
 
@@ -213,6 +216,18 @@ fileprivate final actor BasicGamePlate: NSObject, BasicGamePlateInterface {
         }
 
         if let capturedActiveBingletProcessData {
+            guard let gameBoardHintData = capturedActiveBingletProcessData
+                .gameBoardHintDataCacheMap[capturedActiveBingletProcessData.accumulatedPlacingChoice.toPlacingChoice()] else {
+                await logDirector.plateLog(.basicGame, .error, "On active binglet process but required data missing.")
+                return
+            }
+            let isPlaceable: Bool
+            switch gameBoardHintData {
+            case .notPlaceable:
+                isPlaceable = false
+            case .placeable:
+                isPlaceable = true
+            }
             if let dragProcessData = capturedActiveBingletProcessData.dragProcessData {
                 activeBingletContainerViewData = ActiveBingletContainerViewData(
                     nodeColor: capturedActiveBingletProcessData.binglet.nodeColor,
@@ -222,6 +237,12 @@ fileprivate final actor BasicGamePlate: NSObject, BasicGamePlateInterface {
                     diagonalLinkMatrix: capturedActiveBingletProcessData.binglet.diagonalLinkMatrix,
                     accumulatedPlacingChoice: capturedActiveBingletProcessData.accumulatedPlacingChoice,
                     residualTranslation: dragProcessData.residualTranslation
+                )
+                placeButtonContainerViewData = PlaceButtonContainerViewData(
+                    accumulatedPlacingChoice: capturedActiveBingletProcessData.accumulatedPlacingChoice,
+                    residualTranslation: dragProcessData.residualTranslation,
+                    isPlaceButtonVivid: false,
+                    isPlaceable: isPlaceable
                 )
             } else {
                 activeBingletContainerViewData = ActiveBingletContainerViewData(
@@ -233,9 +254,16 @@ fileprivate final actor BasicGamePlate: NSObject, BasicGamePlateInterface {
                     accumulatedPlacingChoice: capturedActiveBingletProcessData.accumulatedPlacingChoice,
                     residualTranslation: .zero
                 )
+                placeButtonContainerViewData = PlaceButtonContainerViewData(
+                    accumulatedPlacingChoice: capturedActiveBingletProcessData.accumulatedPlacingChoice,
+                    residualTranslation: .zero,
+                    isPlaceButtonVivid: true,
+                    isPlaceable: isPlaceable
+                )
             }
         } else {
             activeBingletContainerViewData = nil
+            placeButtonContainerViewData = nil
         }
 
         waitingBingletContainerViewDataArray = capturedWaitingBingletArray.map { waitingBinglet in
@@ -246,6 +274,66 @@ fileprivate final actor BasicGamePlate: NSObject, BasicGamePlateInterface {
                 verticalLinkMatrix: waitingBinglet.verticalLinkMatrix,
                 diagonalLinkMatrix: waitingBinglet.diagonalLinkMatrix
             )
+        }
+
+        var placeablePlacingChoiceOfIdentityArray: [ActiveBingletProcessData.PlacingChoice] = []
+        if let capturedActiveBingletProcessData {
+            let activeBinglet = capturedActiveBingletProcessData.binglet
+            for rotation in QuarterRotation.allCases {
+                for gridOffsetX in Logic.getMinimalGridOffsetX(
+                    binglet: activeBinglet,
+                    rotation: rotation
+                )...Logic.getMaximalGridOffsetX(
+                    binglet: activeBinglet,
+                    rotation: rotation
+                ) {
+                    for gridOffsetY in Logic.getMinimalGridOffsetY(
+                        binglet: activeBinglet,
+                        rotation: rotation
+                    )...Logic.getMaximalGridOffsetY(
+                        binglet: activeBinglet,
+                        rotation: rotation
+                    ) {
+                        let activeBingletPlacingChoice = ActiveBingletProcessData.PlacingChoice(
+                            rotation: rotation,
+                            gridOffset: GridVector(x: gridOffsetX, y: gridOffsetY)
+                        )
+                        let isPlaceable: Bool
+                        switch capturedActiveBingletProcessData.gameBoardHintDataCacheMap[activeBingletPlacingChoice] {
+                        case .notPlaceable:
+                            isPlaceable = false
+                        case .placeable:
+                            isPlaceable = true
+                        case .none:
+                            isPlaceable = false
+                        }
+                        if isPlaceable {
+                            var activeBingletPlacingChoiceOfIdentity = activeBingletPlacingChoice
+                            activeBingletPlacingChoiceOfIdentity.rotation = .identity
+                            placeablePlacingChoiceOfIdentityArray.append(activeBingletPlacingChoiceOfIdentity)
+                        }
+                    }
+                }
+            }
+            // 중복 삭제.
+            placeablePlacingChoiceOfIdentityArray = Array(Set(placeablePlacingChoiceOfIdentityArray))
+
+            if placeablePlacingChoiceOfIdentityArray.count <= Constant.maximalBingletPlacingCandidateShowCount {
+                bingletPlacingCandidateViewDataArray = placeablePlacingChoiceOfIdentityArray.map {
+                    BingletPlacingCandidateViewData(
+                        nodeColor: capturedActiveBingletProcessData.binglet.nodeColor,
+                        nodeMatrix: capturedActiveBingletProcessData.binglet.nodeMatrix,
+                        horizontalLinkMatrix: capturedActiveBingletProcessData.binglet.horizontalLinkMatrix,
+                        verticalLinkMatrix: capturedActiveBingletProcessData.binglet.verticalLinkMatrix,
+                        diagonalLinkMatrix: capturedActiveBingletProcessData.binglet.diagonalLinkMatrix,
+                        placingChoice: $0
+                    )
+                }
+            } else {
+                bingletPlacingCandidateViewDataArray = []
+            }
+        } else {
+            bingletPlacingCandidateViewDataArray = []
         }
 
         if capturedIsResultDialogShown {
@@ -355,8 +443,6 @@ fileprivate final actor BasicGamePlate: NSObject, BasicGamePlateInterface {
                 } else {
                     gameBoardHintViewData = nil
                 }
-
-                placeButtonViewData = .disabled
             case .placeable(let placeableGameBoardHintData): // 배치 가능.
                 guard let duplicatableGameBoardDataWithPlacedBinglet = capturedActiveBingletProcessData
                     .duplicatableGameBoardDataWithPlacedBingletCacheMap[capturedActiveBingletProcessData.accumulatedPlacingChoice.toPlacingChoice()],
@@ -521,8 +607,6 @@ fileprivate final actor BasicGamePlate: NSObject, BasicGamePlateInterface {
                 } else {
                     gameBoardHintViewData = nil
                 }
-
-                placeButtonViewData = .enabled
             }
         } else { // active binglet 프로세스가 진행 중이지 않은 경우.
             var nodePlaceViewDataMatrix: Matrix<GameBoardViewData.NodePlaceViewData>
@@ -568,8 +652,6 @@ fileprivate final actor BasicGamePlate: NSObject, BasicGamePlateInterface {
             )
 
             gameBoardHintViewData = nil
-
-            placeButtonViewData = .disabled
         }
 
         await MainActor.run {
@@ -578,10 +660,11 @@ fileprivate final actor BasicGamePlate: NSObject, BasicGamePlateInterface {
             viewModel.gameBoardViewData = gameBoardViewData
             viewModel.gameBoardBingleEffectViewData = gameBoardBingleEffectViewData
             viewModel.activeBingletContainerViewData = activeBingletContainerViewData
+            viewModel.placeButtonContainerViewData = placeButtonContainerViewData
             viewModel.bingletActivationViewCount = bingletActivationViewCount
             viewModel.bingletPlacingViewCount = bingletPlacingViewCount
             viewModel.gameBoardHintViewData = gameBoardHintViewData
-            viewModel.placeButtonViewData = placeButtonViewData
+            viewModel.bingletPlacingCandidateViewDataArray = bingletPlacingCandidateViewDataArray
             viewModel.waitingBingletContainerViewDataArray = waitingBingletContainerViewDataArray
             viewModel.resultDialogViewData = resultDialogViewData
             viewModel.isBeforeRestartDialogShown = isBeforeRestartDialogShown
@@ -629,7 +712,41 @@ fileprivate final actor BasicGamePlate: NSObject, BasicGamePlateInterface {
     }
 
     func handleGameBoardTap() async {
-        self.activeBingletProcessData?.accumulatedPlacingChoice.tapCount += 1
+        self.activeBingletProcessData?.accumulatedPlacingChoice.rotationCount += 1
+        guard let capturedActiveBingletProcessData = activeBingletProcessData else { return }
+        let minimalGridOffsetX = Logic.getMinimalGridOffsetX(
+            binglet: capturedActiveBingletProcessData.binglet,
+            rotation: capturedActiveBingletProcessData.accumulatedPlacingChoice.rotation
+        )
+        let maximalGridOffsetX = Logic.getMaximalGridOffsetX(
+            binglet: capturedActiveBingletProcessData.binglet,
+            rotation: capturedActiveBingletProcessData.accumulatedPlacingChoice.rotation
+        )
+        let minimalGridOffsetY = Logic.getMinimalGridOffsetY(
+            binglet: capturedActiveBingletProcessData.binglet,
+            rotation: capturedActiveBingletProcessData.accumulatedPlacingChoice.rotation
+        )
+        let maximalGridOffsetY = Logic.getMaximalGridOffsetY(
+            binglet: capturedActiveBingletProcessData.binglet,
+            rotation: capturedActiveBingletProcessData.accumulatedPlacingChoice.rotation
+        )
+        if capturedActiveBingletProcessData.accumulatedPlacingChoice.gridOffset.x < minimalGridOffsetX {
+            self.activeBingletProcessData?.accumulatedPlacingChoice.gridOffset.x = minimalGridOffsetX
+        }
+        if maximalGridOffsetX < capturedActiveBingletProcessData.accumulatedPlacingChoice.gridOffset.x {
+            self.activeBingletProcessData?.accumulatedPlacingChoice.gridOffset.x = maximalGridOffsetX
+        }
+        if capturedActiveBingletProcessData.accumulatedPlacingChoice.gridOffset.y < minimalGridOffsetY {
+            self.activeBingletProcessData?.accumulatedPlacingChoice.gridOffset.y = minimalGridOffsetY
+        }
+        if maximalGridOffsetY < capturedActiveBingletProcessData.accumulatedPlacingChoice.gridOffset.y {
+            self.activeBingletProcessData?.accumulatedPlacingChoice.gridOffset.y = maximalGridOffsetY
+        }
+        await updateViewModel()
+    }
+
+    func handleClockwiseButtonTap() async {
+        self.activeBingletProcessData?.accumulatedPlacingChoice.rotationCount -= 1
         guard let capturedActiveBingletProcessData = activeBingletProcessData else { return }
         let minimalGridOffsetX = Logic.getMinimalGridOffsetX(
             binglet: capturedActiveBingletProcessData.binglet,
@@ -848,7 +965,7 @@ fileprivate final actor BasicGamePlate: NSObject, BasicGamePlateInterface {
         activeBingletProcessData = ActiveBingletProcessData(
             binglet: dequeuedBinglet,
             accumulatedPlacingChoice: ActiveBingletProcessData.AccumulatedPlacingChoice(
-                tapCount: 0,
+                rotationCount: 0,
                 gridOffset: .zero
             ),
             isHintVisible: false,
@@ -1007,7 +1124,7 @@ fileprivate final actor BasicGamePlate: NSObject, BasicGamePlateInterface {
         activeBingletProcessData = ActiveBingletProcessData(
             binglet: bingletToBeActivated,
             accumulatedPlacingChoice: ActiveBingletProcessData.AccumulatedPlacingChoice(
-                tapCount: 0,
+                rotationCount: 0,
                 gridOffset: .zero
             ),
             isHintVisible: false,

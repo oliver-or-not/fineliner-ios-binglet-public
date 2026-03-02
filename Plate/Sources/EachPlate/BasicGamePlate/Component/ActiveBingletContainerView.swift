@@ -20,6 +20,18 @@ struct ActiveBingletContainerView: View {
 
     // MARK: - State
 
+    @State var placeButtonHighlightBlinkTrigger: Bool = false
+
+    // MARK: - Lifecycle
+
+    init(
+        viewData: ActiveBingletContainerViewData
+    ) {
+        self.viewData = viewData
+    }
+
+    // MARK: - View
+
     var body: some View {
         Spacer()
             .frame(
@@ -28,7 +40,7 @@ struct ActiveBingletContainerView: View {
             )
             .overlay {
                 let rotationAngle: Double
-                = Double(viewData.accumulatedPlacingChoice.tapCount) * (-(.pi / 2))
+                = Double(viewData.accumulatedPlacingChoice.rotationCount) * (-(.pi / 2))
                 RoundedRectangle(
                     cornerRadius: Constant.gameBoardNodeCircleLinearSize / 2 + Constant.activeBingletContainerPadding
                 )
@@ -158,13 +170,13 @@ struct ActiveBingletContainerView: View {
 
 #Preview {
     ActiveBingletContainerView(
-        viewData: .init(
+        viewData: ActiveBingletContainerViewData(
             nodeColor: Binglet.crab.nodeColor,
             nodeMatrix: Binglet.crab.nodeMatrix,
             horizontalLinkMatrix: Binglet.crab.horizontalLinkMatrix,
             verticalLinkMatrix: Binglet.crab.verticalLinkMatrix,
             diagonalLinkMatrix: Binglet.crab.diagonalLinkMatrix,
-            accumulatedPlacingChoice: .init(tapCount: 0, gridOffset: .zero),
+            accumulatedPlacingChoice: .init(rotationCount: 0, gridOffset: .zero),
             residualTranslation: .zero
         )
     )

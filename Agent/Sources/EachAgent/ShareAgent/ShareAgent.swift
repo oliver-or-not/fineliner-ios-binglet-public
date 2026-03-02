@@ -28,7 +28,9 @@ public protocol ShareAgentInterface: GlobalEntity.Agent.Interface, Sendable {
 
     func setLinkString(value: String?) async
     func getLinkString() async -> String?
-    func showShareSheet() async
+
+    func showDefaultShareSheet() async
+    func showShareSheetWithScore(score: Int) async
 }
 
 fileprivate final actor ShareAgent: ShareAgentInterface {
@@ -67,11 +69,20 @@ fileprivate final actor ShareAgent: ShareAgentInterface {
         linkString
     }
 
-    func showShareSheet() async {
+    func showDefaultShareSheet() async {
         let capturedLinkString = linkString
         await MainActor.run {
             windowModel.linkString = capturedLinkString
-            windowModel.shareSheetPresentationRequestSignal += 1
+            windowModel.shareSheetPresentationDefaultRequestSignal += 1
+        }
+    }
+
+    func showShareSheetWithScore(score: Int) async {
+        let capturedLinkString = linkString
+        await MainActor.run {
+            windowModel.linkString = capturedLinkString
+            let signalCounter = windowModel.shareSheetPresentationRequestWithScoreSignal.0
+            windowModel.shareSheetPresentationRequestWithScoreSignal = (signalCounter + 1, score)
         }
     }
 }

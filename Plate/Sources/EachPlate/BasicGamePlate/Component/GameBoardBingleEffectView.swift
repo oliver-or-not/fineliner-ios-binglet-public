@@ -23,6 +23,8 @@ struct GameBoardBingleEffectView: View {
 
     // MARK: - Lifecycle
 
+    // MARK: - View
+
     var body: some View {
         ZStack {
             gameBoardBingleEffectNodeLayerView

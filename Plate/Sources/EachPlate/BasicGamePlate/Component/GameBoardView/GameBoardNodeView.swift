@@ -20,6 +20,8 @@ struct GameBoardNodeView: View {
 
     // MARK: - State
 
+    // MARK: - View
+
     var body: some View {
         Spacer()
             .frame(

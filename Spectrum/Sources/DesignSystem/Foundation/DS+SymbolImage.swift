@@ -17,4 +17,6 @@ public extension DS.SymbolImage {
     static let chevronDown = Image(systemName: "chevron.down")
     static let circleFill = Image(systemName: "circle.fill")
     static let checkmarkCircleFill = Image(systemName: "checkmark.circle.fill")
+    static let nosign = Image(systemName: "nosign")
+    static let checkmark = Image(systemName: "checkmark")
 }

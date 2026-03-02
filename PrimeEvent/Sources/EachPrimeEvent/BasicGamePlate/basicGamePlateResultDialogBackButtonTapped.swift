@@ -2,7 +2,6 @@
 
 import Spectrum
 import Agent
-import Plate
 import PrimeEventBase
 
 // MARK: - Context

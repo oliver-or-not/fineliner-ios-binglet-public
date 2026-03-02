@@ -21,7 +21,9 @@ struct GameBoardBackgroundView: View {
                 CGFloat(Constant.gameBoardUnitAreaLinearSize) / 2 * CGFloat(sqrt(2) - 1)
             )
             .background(
-                RoundedRectangle(cornerRadius: CGFloat(Constant.gameBoardUnitAreaLinearSize) / 2 * CGFloat(sqrt(2))
+                RoundedRectangle(
+                    cornerRadius: CGFloat(Constant.gameBoardUnitAreaLinearSize) / 2 * CGFloat(sqrt(2)),
+                    style: .circular
                 )
                 .fill(Constant.gameBoardBackgroundColor)
             )

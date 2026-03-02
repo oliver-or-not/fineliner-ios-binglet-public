@@ -36,14 +36,14 @@ public struct ActiveBingletProcessData: Codable, Hashable, Sendable {
 
     public struct AccumulatedPlacingChoice: Codable, Hashable, Sendable {
 
-        public var tapCount: UInt
+        public var rotationCount: Int
         public var gridOffset: GridVector
 
         public init(
-            tapCount: UInt,
+            rotationCount: Int,
             gridOffset: GridVector
         ) {
-            self.tapCount = tapCount
+            self.rotationCount = rotationCount
             self.gridOffset = gridOffset
         }
     }

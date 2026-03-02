@@ -20,5 +20,5 @@ fileprivate let task: BasePrimeEvent.Task = { _ in
 
     // MARK: - Present Settings Plate
 
-    await shareAgent.showShareSheet()
+    await shareAgent.showDefaultShareSheet()
 }

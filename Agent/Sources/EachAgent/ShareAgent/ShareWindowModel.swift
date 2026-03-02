@@ -8,14 +8,17 @@ import Foundation
 
     public static let shared = ShareWindowModel(
         linkString: nil,
-        shareSheetPresentationRequestSignal: 0
+        shareSheetPresentationDefaultRequestSignal: 0,
+        shareSheetPresentationRequestWithScoreSignal: (0, 0)
     )
 
     public var linkString: String?
-    public var shareSheetPresentationRequestSignal: Int
+    public var shareSheetPresentationDefaultRequestSignal: Int
+    public var shareSheetPresentationRequestWithScoreSignal: (Int, Int) // (시그널 카운터, 스코어)
 
-    private init(linkString: String?, shareSheetPresentationRequestSignal: Int) {
+    private init(linkString: String?, shareSheetPresentationDefaultRequestSignal: Int, shareSheetPresentationRequestWithScoreSignal: (Int, Int)) {
         self.linkString = linkString
-        self.shareSheetPresentationRequestSignal = shareSheetPresentationRequestSignal
+        self.shareSheetPresentationDefaultRequestSignal = shareSheetPresentationDefaultRequestSignal
+        self.shareSheetPresentationRequestWithScoreSignal = shareSheetPresentationRequestWithScoreSignal
     }
 }

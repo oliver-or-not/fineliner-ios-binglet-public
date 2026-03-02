@@ -1,6 +1,7 @@
 // MARK: - Module Dependency
 
 import SwiftUI
+import Spectrum
 
 // MARK: - Context
 
@@ -25,20 +26,9 @@ struct GameBoardGridBlockedNodeView: View {
                             height: Constant.gameBoardGridBlockedNodeLinearSize
                         )
                     ZStack {
-                        Capsule()
+                        DS.SymbolImage.nosign
+                            .font(.system(size: 30, weight: .black))
                             .foregroundStyle(Constant.gameBoardBackgroundColor)
-                            .frame(
-                                width: Constant.gameBoardGridBlockedNodeCrossMarkLineLength,
-                                height: Constant.gameBoardGridBlockedNodeCrossMarkLineWidth
-                            )
-                            .rotationEffect(.radians(-(.pi / 4)))
-                        Capsule()
-                            .foregroundStyle(Constant.gameBoardBackgroundColor)
-                            .frame(
-                                width: Constant.gameBoardGridBlockedNodeCrossMarkLineLength,
-                                height: Constant.gameBoardGridBlockedNodeCrossMarkLineWidth
-                            )
-                            .rotationEffect(.radians(.pi / 4))
                     }
                 }
             }

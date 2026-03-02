@@ -17,10 +17,11 @@ fileprivate typealias Constant = BasicGamePlateConstant
         gameBoardViewData: Constant.initialGameBoardViewData,
         gameBoardBingleEffectViewData: Constant.initialGameBoardBingleEffectViewData,
         activeBingletContainerViewData: Constant.initialActiveBingletContainerViewData,
+        placeButtonContainerViewData: Constant.initialPlaceButtonContainerViewData,
         bingletActivationViewCount: Constant.initialBingletActivationViewCount,
         bingletPlacingViewCount: Constant.initialBingletPlacingViewCount,
         gameBoardHintViewData: Constant.initialGameBoardHintViewData,
-        placeButtonViewData: Constant.initialPlaceButtonViewData,
+        bingletPlacingCandidateViewDataArray: Constant.initialBingletPlacingCandidateViewDataArray,
         waitingBingletContainerViewDataArray: Constant.initialWaitingBingletContainerViewDataArray,
         resultDialogViewData: Constant.initialResultDialogViewData,
         isBeforeRestartDialogShown: Constant.initialIsBeforeRestartDialogShown,
@@ -33,10 +34,11 @@ fileprivate typealias Constant = BasicGamePlateConstant
     var gameBoardViewData: GameBoardViewData
     var gameBoardBingleEffectViewData: GameBoardBingleEffectViewData?
     var activeBingletContainerViewData: ActiveBingletContainerViewData?
+    var placeButtonContainerViewData: PlaceButtonContainerViewData?
     var bingletActivationViewCount: UInt
     var bingletPlacingViewCount: UInt
     var gameBoardHintViewData: GameBoardHintViewData?
-    var placeButtonViewData: PlaceButtonViewData
+    var bingletPlacingCandidateViewDataArray: [BingletPlacingCandidateViewData]
     var waitingBingletContainerViewDataArray: [WaitingBingletContainerViewData]
     var resultDialogViewData: ResultDialogViewData?
     var isBeforeRestartDialogShown: Bool
@@ -49,10 +51,11 @@ fileprivate typealias Constant = BasicGamePlateConstant
         gameBoardViewData: GameBoardViewData,
         gameBoardBingleEffectViewData: GameBoardBingleEffectViewData?,
         activeBingletContainerViewData: ActiveBingletContainerViewData?,
+        placeButtonContainerViewData: PlaceButtonContainerViewData?,
         bingletActivationViewCount: UInt,
         bingletPlacingViewCount: UInt,
         gameBoardHintViewData: GameBoardHintViewData?,
-        placeButtonViewData: PlaceButtonViewData,
+        bingletPlacingCandidateViewDataArray: [BingletPlacingCandidateViewData],
         waitingBingletContainerViewDataArray: [WaitingBingletContainerViewData],
         resultDialogViewData: ResultDialogViewData?,
         isBeforeRestartDialogShown: Bool,
@@ -64,10 +67,11 @@ fileprivate typealias Constant = BasicGamePlateConstant
         self.gameBoardViewData = gameBoardViewData
         self.gameBoardBingleEffectViewData = gameBoardBingleEffectViewData
         self.activeBingletContainerViewData = activeBingletContainerViewData
+        self.placeButtonContainerViewData = placeButtonContainerViewData
         self.bingletActivationViewCount = bingletActivationViewCount
         self.bingletPlacingViewCount = bingletPlacingViewCount
         self.gameBoardHintViewData = gameBoardHintViewData
-        self.placeButtonViewData = placeButtonViewData
+        self.bingletPlacingCandidateViewDataArray = bingletPlacingCandidateViewDataArray
         self.waitingBingletContainerViewDataArray = waitingBingletContainerViewDataArray
         self.resultDialogViewData = resultDialogViewData
         self.isBeforeRestartDialogShown = isBeforeRestartDialogShown

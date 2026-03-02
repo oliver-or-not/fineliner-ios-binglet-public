@@ -83,6 +83,7 @@ public struct BasicGamePlateView: View {
                                     isScoreBouncing = false
                                 }
                             }
+                            .zIndex(0)
                     } else {
                         Text("No Score")
                             .font(.system(size: 30))
@@ -92,12 +93,16 @@ public struct BasicGamePlateView: View {
                             .lineLimit(1)
                             .minimumScaleFactor(0.2)
                             .padding()
+                            .zIndex(0)
                     }
                     Spacer().frame(height: 30)
                     ZStack {
                         GameBoardBackgroundView()
                         GameBoardGridView(viewData: viewModel.gameBoardGridViewData)
                         GameBoardView(viewData: viewModel.gameBoardViewData)
+                        ForEach(viewModel.bingletPlacingCandidateViewDataArray.indices, id: \.self) { index in
+                            BingletPlacingCandidateView(viewData: viewModel.bingletPlacingCandidateViewDataArray[index])
+                        }
                         if let gameBoardBingleEffectViewData = viewModel.gameBoardBingleEffectViewData {
                             GameBoardBingleEffectView(viewData: gameBoardBingleEffectViewData)
                         }
@@ -125,7 +130,37 @@ public struct BasicGamePlateView: View {
                         if let gameBoardHintViewData = viewModel.gameBoardHintViewData {
                             GameBoardHintView(viewData: gameBoardHintViewData)
                         }
+                        if let placeButtonContainerViewData = viewModel.placeButtonContainerViewData {
+                            PlaceButtonContainerView(
+                                viewData: placeButtonContainerViewData,
+                                tutorialHighlightState: nil,
+                                placeButtonAction: {
+                                    Task {
+                                        await primeEventDirector.receive(.basicGamePlatePlaceButtonTapped)
+                                    }
+                                }
+                            )
+                            .scaleEffect(
+                                activeBingletPullTrigger
+                                ? Constant.waitingBingletContainerScale
+                                : 1
+                            )
+                            .offset(
+                                x: activeBingletPullTrigger
+                                ? -(CGFloat(Constant.bingletContainerHorizontalNodeCount) * Constant.waitingBingletContainerUnitAreaLinearSize
+                                    + Constant.waitingBingletContainerPadding * 2) * 1.5
+                                - Constant.waitingBingletArraySpacing * 1.5
+                                : 0,
+                                y: activeBingletPullTrigger
+                                ? (CGFloat(Constant.gameBoardVerticalNodeCount) * Constant.gameBoardUnitAreaLinearSize) * 0.5
+                                + 15
+                                + (CGFloat(Constant.bingletContainerVerticalNodeCount) * Constant.waitingBingletContainerUnitAreaLinearSize
+                                   + Constant.waitingBingletContainerPadding * 2) * 0.5
+                                : 0
+                            )
+                        }
                     }
+                    .zIndex(1)
                     .onTapGesture {
                         Task { @MainActor in
                             await primeEventDirector.receive(.basicGamePlateGameBoardTapped)
@@ -171,6 +206,7 @@ public struct BasicGamePlateView: View {
                         + Constant.waitingBingletArraySpacing
                         : 0
                     )
+                    .zIndex(0)
                     .onChange(of: viewModel.bingletActivationViewCount) {
                         activeBingletPullTrigger = true
                         waitingBingletArrayPullTrigger = true
@@ -182,8 +218,7 @@ public struct BasicGamePlateView: View {
                             waitingBingletArrayPullTrigger = false
                         })
                     }
-                    Spacer().frame(height: 15)
-                    PlaceButtonSectionView(viewData: viewModel.placeButtonViewData)
+                    Spacer().frame(height: 75)
                 }
                 .scaleEffect(scale)
                 VStack(spacing: 0) {
@@ -354,11 +389,11 @@ public struct BasicGamePlateView: View {
                         Button {
                             Task {
                                 await primeEventDirector.receive(
-                                    .basicGamePlateResultDialogBackButtonTapped
+                                    .basicGamePlateResultDialogShareButtonTapped
                                 )
                             }
                         } label: {
-                            Text(String(lKey: .basicGamePlateResultDialogBackButtonTitle))
+                            Text(String(lKey: .basicGamePlateResultDialogShareButtonTitle))
                                 .font(.system(size: 17))
                                 .foregroundStyle(DS.SemanticColor.generalText)
                                 .frame(width: 80)

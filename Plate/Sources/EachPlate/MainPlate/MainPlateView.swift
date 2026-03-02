@@ -100,7 +100,7 @@ public struct MainPlateView: View {
             }
         } label: {
             Text(String(lKey: .mainPlateMarathonButtonTitle))
-                .font(.system(size: 22))
+                .font(.system(size: 20))
                 .foregroundStyle(DS.SemanticColor.generalText)
                 .lineLimit(1)
                 .minimumScaleFactor(0.2)
@@ -119,7 +119,7 @@ public struct MainPlateView: View {
             }
         } label: {
             Text(String(lKey: .mainPlateRankingsButtonTitle))
-                .font(.system(size: 22))
+                .font(.system(size: 20))
                 .foregroundStyle(DS.SemanticColor.generalText)
                 .lineLimit(1)
                 .minimumScaleFactor(0.2)
@@ -138,7 +138,7 @@ public struct MainPlateView: View {
             }
         } label: {
             Text(String(lKey: .mainPlateSettingsButtonTitle))
-                .font(.system(size: 22))
+                .font(.system(size: 20))
                 .foregroundStyle(DS.SemanticColor.generalText)
                 .lineLimit(1)
                 .minimumScaleFactor(0.2)

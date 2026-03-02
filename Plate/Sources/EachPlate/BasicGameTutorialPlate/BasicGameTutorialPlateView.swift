@@ -32,7 +32,7 @@ public struct BasicGameTutorialPlateView: View {
     @State var activeBingletPullTrigger: Bool = false
 
     @State var tutorialGameBoardHighlightBlinkTrigger: Bool = false
-    @State var tutorialPlaceButtonHighlightBlinkTrigger: Bool = false
+    @State var okButtonHighlightBlinkTrigger: Bool = false
 
     // MARK: - Lifecycle
 
@@ -80,6 +80,7 @@ public struct BasicGameTutorialPlateView: View {
                         .lineLimit(1)
                         .minimumScaleFactor(0.2)
                         .padding()
+                        .zIndex(0)
                     Spacer().frame(height: 30)
                     ZStack {
                         if viewModel.tutorialHighlightState == .gameBoard {
@@ -94,7 +95,7 @@ public struct BasicGameTutorialPlateView: View {
                                     .opacity(tutorialGameBoardHighlightBlinkTrigger ? 0 : 1)
                                     .allowsHitTesting(false)
                                 }
-                                .animation(Animation.linear(duration: 1).repeatForever(autoreverses: true), value: tutorialGameBoardHighlightBlinkTrigger)
+                                .animation(Animation.linear(duration: 0.7).repeatForever(autoreverses: true), value: tutorialGameBoardHighlightBlinkTrigger)
                                 .onAppear {
                                     if !tutorialGameBoardHighlightBlinkTrigger {
                                         tutorialGameBoardHighlightBlinkTrigger = true
@@ -114,7 +115,7 @@ public struct BasicGameTutorialPlateView: View {
                             GameBoardBingleEffectView(viewData: gameBoardBingleEffectViewData)
                         }
                         if let guideBingletContainerViewData = viewModel.guideBingletContainerViewData {
-                            ActiveBingletContainerView(viewData: guideBingletContainerViewData)
+                            GuideBingletContainerView(viewData: guideBingletContainerViewData)
                                 .compositingGroup()
                                 .opacity(colorScheme == .dark ? 0.6 : 0.4)
                                 .allowsHitTesting(false)
@@ -143,7 +144,38 @@ public struct BasicGameTutorialPlateView: View {
                         if let gameBoardHintViewData = viewModel.gameBoardHintViewData {
                             GameBoardHintView(viewData: gameBoardHintViewData)
                         }
+                        if let placeButtonContainerViewData = viewModel.placeButtonContainerViewData {
+                            PlaceButtonContainerView(
+                                viewData: placeButtonContainerViewData,
+                                tutorialHighlightState: viewModel.tutorialHighlightState,
+                                placeButtonAction: {
+                                    Task {
+                                        await primeEventDirector.receive(.basicGameTutorialPlatePlaceButtonTapped)
+                                    }
+                                }
+                            )
+                            .allowsHitTesting(viewModel.tutorialHighlightState == .placeButton)
+                            .scaleEffect(
+                                activeBingletPullTrigger
+                                ? Constant.waitingBingletContainerScale
+                                : 1
+                            )
+                            .offset(
+                                x: activeBingletPullTrigger
+                                ? -(CGFloat(Constant.bingletContainerHorizontalNodeCount) * Constant.waitingBingletContainerUnitAreaLinearSize
+                                    + Constant.waitingBingletContainerPadding * 2) * 1.5
+                                - Constant.waitingBingletArraySpacing * 1.5
+                                : 0,
+                                y: activeBingletPullTrigger
+                                ? (CGFloat(Constant.gameBoardVerticalNodeCount) * Constant.gameBoardUnitAreaLinearSize) * 0.5
+                                + 15
+                                + (CGFloat(Constant.bingletContainerVerticalNodeCount) * Constant.waitingBingletContainerUnitAreaLinearSize
+                                   + Constant.waitingBingletContainerPadding * 2) * 0.5
+                                : 0
+                            )
+                        }
                     }
+                    .zIndex(1)
                     .onTapGesture {
                         Task { @MainActor in
                             await primeEventDirector.receive(.basicGameTutorialPlateGameBoardTapped)
@@ -189,6 +221,7 @@ public struct BasicGameTutorialPlateView: View {
                         + Constant.waitingBingletArraySpacing
                         : 0
                     )
+                    .zIndex(0)
                     .onChange(of: viewModel.bingletActivationViewCount) {
                         activeBingletPullTrigger = true
                         waitingBingletArrayPullTrigger = true
@@ -200,32 +233,17 @@ public struct BasicGameTutorialPlateView: View {
                             waitingBingletArrayPullTrigger = false
                         })
                     }
-                    Spacer().frame(height: 15)
-                    if viewModel.tutorialHighlightState == .placeButton {
-                        TutorialPlaceButtonSectionView(viewData: viewModel.placeButtonViewData, highlightState: viewModel.tutorialHighlightState)
-                            .background {
-                                RoundedRectangle(cornerRadius: 30)
-                                .fill(tutorialHighlightColor)
-                                .blur(radius: 10)
-                                .opacity(tutorialPlaceButtonHighlightBlinkTrigger ? 0 : 1)
-                                .allowsHitTesting(false)
-                            }
-                            .animation(Animation.linear(duration: 1).repeatForever(autoreverses: true), value: tutorialPlaceButtonHighlightBlinkTrigger)
-                            .onAppear {
-                                if !tutorialPlaceButtonHighlightBlinkTrigger {
-                                    tutorialPlaceButtonHighlightBlinkTrigger = true
-                                }
-                            }
-                    } else {
-                        TutorialPlaceButtonSectionView(viewData: viewModel.placeButtonViewData, highlightState: viewModel.tutorialHighlightState)
-                            .onAppear {
-                                if tutorialPlaceButtonHighlightBlinkTrigger {
-                                    tutorialPlaceButtonHighlightBlinkTrigger = false
-                                }
-                            }
-                    }
+                    Spacer().frame(height: 75)
                 }
                 .scaleEffect(scale)
+                if let tutorialGuideDialogViewData = viewModel.tutorialGuideDialogViewData,
+                   tutorialGuideDialogViewData.hasBackgroundDim {
+                    DS.PaletteColor.white
+                        .opacity(0)
+                        .contentShape(Rectangle())
+                        .allowsHitTesting(true)
+                        .ignoresSafeArea()
+                }
                 VStack(spacing: 0) {
                     topAppBar
                         .fixedSize(horizontal: false, vertical: true)
@@ -307,6 +325,24 @@ public struct BasicGameTutorialPlateView: View {
                     .tint(DS.SemanticColor.dialogButtonBackground)
                     .buttonStyle(.borderedProminent)
                     .fixedSize()
+                    .background {
+                        Capsule()
+                        .fill(tutorialHighlightColor)
+                        .blur(radius: 10)
+                        .opacity(okButtonHighlightBlinkTrigger ? 0 : 1)
+                        .allowsHitTesting(false)
+                    }
+                    .animation(Animation.linear(duration: 0.7).repeatForever(autoreverses: true), value: okButtonHighlightBlinkTrigger)
+                    .onAppear {
+                        if !okButtonHighlightBlinkTrigger {
+                            okButtonHighlightBlinkTrigger = true
+                        }
+                    }
+                    .onDisappear {
+                        if okButtonHighlightBlinkTrigger {
+                            okButtonHighlightBlinkTrigger = false
+                        }
+                    }
                     Spacer().frame(width: 15)
                 }
             }

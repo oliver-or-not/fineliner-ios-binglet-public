@@ -38,6 +38,7 @@ struct ActiveBingletContainerDiagonalLinkView: View {
                                 endPoint: .bottom
                             )
                         )
+                        .clipShape(RoundedRectangle(cornerRadius: Constant.gameBoardLinkWidth / 2))
                         .frame(
                             width: Constant.gameBoardDiagonalLinkLength,
                             height: Constant.gameBoardLinkWidth
@@ -58,6 +59,7 @@ struct ActiveBingletContainerDiagonalLinkView: View {
                                 endPoint: .bottom
                             )
                         )
+                        .clipShape(RoundedRectangle(cornerRadius: Constant.gameBoardLinkWidth / 2))
                         .frame(
                             width: Constant.gameBoardDiagonalLinkLength,
                             height: Constant.gameBoardLinkWidth
@@ -78,6 +80,7 @@ struct ActiveBingletContainerDiagonalLinkView: View {
                                 endPoint: .bottom
                             )
                         )
+                        .clipShape(RoundedRectangle(cornerRadius: Constant.gameBoardLinkWidth / 2))
                         .frame(
                             width: Constant.gameBoardDiagonalLinkLength,
                             height: Constant.gameBoardLinkWidth
@@ -97,6 +100,7 @@ struct ActiveBingletContainerDiagonalLinkView: View {
                                 endPoint: .bottom
                             )
                         )
+                        .clipShape(RoundedRectangle(cornerRadius: Constant.gameBoardLinkWidth / 2))
                         .frame(
                             width: Constant.gameBoardDiagonalLinkLength,
                             height: Constant.gameBoardLinkWidth

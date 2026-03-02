@@ -13,6 +13,7 @@ import PrimeEventBase
 fileprivate let logDirector = GlobalEntity.Director.log
 
 fileprivate let dateAgent = GlobalEntity.Agent.dateAgent
+fileprivate let legacyV1AppStateAgent = GlobalEntity.Agent.legacyV1AppStateAgent
 fileprivate let appStateAgent = GlobalEntity.Agent.appStateAgent
 fileprivate let appInfoAgent = GlobalEntity.Agent.appInfoAgent
 fileprivate let appAppearanceAgent = GlobalEntity.Agent.appAppearanceAgent
@@ -68,14 +69,40 @@ fileprivate let task: BasePrimeEvent.Task = { _ in
 
     // MARK: - Before Migration
 
-    let migratedBuildNumber = await appStateAgent.getMigratedBuildNumber()
-    if migratedBuildNumber == nil {
+    var migratedBuildNumberFromAppState = await appStateAgent.getMigratedBuildNumber()
+    if migratedBuildNumberFromAppState == nil {
+        // migrated build number 정보가 legacyV1AppStateAgent에 담겨있는 경우에는 그것을 가져온다.
+        // 말하자면 migrated build number에 대한 migration이다.
+        migratedBuildNumberFromAppState = await legacyV1AppStateAgent.getMigratedBuildNumber()
+        await appStateAgent.setMigratedBuildNumber(migratedBuildNumberFromAppState)
+        await legacyV1AppStateAgent.setMigratedBuildNumber(nil)
+    }
+
+    let migratedBuildNumber: Int
+    if let migratedBuildNumberFromAppState {
+        migratedBuildNumber = migratedBuildNumberFromAppState
+    } else {
         // 최초 실행인 경우. 현재 빌드 번호를 migratedBuildNumber로 지정한다.
         // 따라서 이 경우에는 마이그레이션이 진행되지 않는다.
         await appStateAgent.setMigratedBuildNumber(buildNumber)
+        migratedBuildNumber = buildNumber
     }
 
     // MARK: - Migration
+
+    if migratedBuildNumber < 7 {
+        let installIdFromAppStateV1 = await legacyV1AppStateAgent.getInstallId()
+        await appStateAgent.setInstallId(installIdFromAppStateV1)
+        let colorSchemeFromAppStateV1 = await legacyV1AppStateAgent.getColorScheme()
+        await appStateAgent.setColorScheme(colorSchemeFromAppStateV1)
+        let isHapticFeedbackOnFromAppStateV1 = await legacyV1AppStateAgent.getIsHapticFeedbackOn()
+        await appStateAgent.setIsHapticFeedbackOn(isHapticFeedbackOnFromAppStateV1)
+        let basicGameSnapshotFromAppStateV1 = await legacyV1AppStateAgent.getBasicGameSnapshot()
+        await appStateAgent.setBasicGameSnapshot(basicGameSnapshotFromAppStateV1)
+        let recentResultArrayOfBasicGame = await legacyV1AppStateAgent.getRecentResultArrayOfBasicGame()
+        await appStateAgent.setRecentResultArrayOfBasicGame(recentResultArrayOfBasicGame)
+        await appStateAgent.setMigratedBuildNumber(5)
+    }
 
     // MARK: - After Migration
 
@@ -91,15 +118,6 @@ fileprivate let task: BasePrimeEvent.Task = { _ in
     // MARK: - Sound
 
     await soundAgent.setActivationLevel(.active)
-
-    let isBackgroundMusicOn = await appStateAgent.getIsBackgroundMusicOn()
-    await soundAgent.setIsBackgroundMusicOn(isBackgroundMusicOn)
-    let backgroundMusicVolume = await appStateAgent.getBackgroundMusicVolume()
-    await soundAgent.setBackgroundMusicVolume(Float(backgroundMusicVolume))
-    let isSoundEffectOn = await appStateAgent.getIsSoundEffectOn()
-    await soundAgent.setIsSoundEffectOn(isSoundEffectOn)
-    let soundEffectVolume = await appStateAgent.getSoundEffectVolume()
-    await soundAgent.setSoundEffectVolume(Float(soundEffectVolume))
 
     // MARK: - App Id
 

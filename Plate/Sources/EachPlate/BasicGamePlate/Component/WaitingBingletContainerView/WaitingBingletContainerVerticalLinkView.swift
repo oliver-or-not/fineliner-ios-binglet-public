@@ -26,6 +26,9 @@ struct WaitingBingletContainerVerticalLinkView: View {
                 case .occupied:
                     Rectangle()
                         .foregroundStyle(Constant.linkColor)
+                        .clipShape(RoundedRectangle(
+                            cornerRadius: Constant.waitingBingletLinkWidth / 2
+                        ))
                         .frame(
                             width: Constant.waitingBingletLinkWidth,
                             height: Constant.waitingBingletContainerUnitAreaLinearSize

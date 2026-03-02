@@ -36,6 +36,7 @@ public enum PrimeEventDesignation: String, Sendable, CaseIterable {
     case basicGamePlateGameBoardDragged
     case basicGamePlateGameBoardDragEnded
     case basicGamePlatePlaceButtonTapped
+    case basicGamePlateResultDialogShareButtonTapped
     case basicGamePlateResultDialogBackButtonTapped
     case basicGamePlateResultDialogRestartButtonTapped
 
@@ -148,6 +149,8 @@ public enum PrimeEventDesignation: String, Sendable, CaseIterable {
                 .hierarchical(scale: .boundedInPlate)
         case .basicGamePlatePlaceButtonTapped:
                 .hierarchical(scale: .boundedInPlate)
+        case .basicGamePlateResultDialogShareButtonTapped:
+                .hierarchical(scale: .interplate)
         case .basicGamePlateResultDialogBackButtonTapped:
                 .hierarchical(scale: .interplate)
         case .basicGamePlateResultDialogRestartButtonTapped:
@@ -223,6 +226,7 @@ public enum PrimeEventDesignationWithPayload: Sendable {
     case basicGamePlateGameBoardDragged(translation: CGSize, unitDistance: CGFloat)
     case basicGamePlateGameBoardDragEnded
     case basicGamePlatePlaceButtonTapped
+    case basicGamePlateResultDialogShareButtonTapped
     case basicGamePlateResultDialogBackButtonTapped
     case basicGamePlateResultDialogRestartButtonTapped
 
@@ -285,6 +289,8 @@ public enum PrimeEventDesignationWithPayload: Sendable {
                 .basicGamePlateGameBoardDragEnded
         case .basicGamePlatePlaceButtonTapped:
                 .basicGamePlatePlaceButtonTapped
+        case .basicGamePlateResultDialogShareButtonTapped:
+                .basicGamePlateResultDialogShareButtonTapped
         case .basicGamePlateResultDialogBackButtonTapped:
                 .basicGamePlateResultDialogBackButtonTapped
         case .basicGamePlateResultDialogRestartButtonTapped:

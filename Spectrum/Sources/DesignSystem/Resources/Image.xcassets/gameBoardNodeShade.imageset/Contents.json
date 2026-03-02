@@ -3,6 +3,26 @@
     {
       "filename" : "gameBoardNodeShade.pdf",
       "idiom" : "universal"
+    },
+    {
+      "appearances" : [
+        {
+          "appearance" : "luminosity",
+          "value" : "light"
+        }
+      ],
+      "filename" : "gameBoardNodeShade 1.pdf",
+      "idiom" : "universal"
+    },
+    {
+      "appearances" : [
+        {
+          "appearance" : "luminosity",
+          "value" : "dark"
+        }
+      ],
+      "filename" : "gameBoardNodeShadeDark.pdf",
+      "idiom" : "universal"
     }
   ],
   "info" : {

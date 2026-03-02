@@ -9,7 +9,9 @@ public enum AgentDesignation: String, Sendable, CaseIterable {
 
     // MARK: - App
 
-    /// 영구 저장소 및 앱의 전역적인 상태 정보.
+    /// 영구 저장소 및 앱의 전역적인 상태 정보. 레거시.
+    case legacyV1AppState
+    /// 영구 저장소 및 앱의 전역적인 상태 정보. 파일 매니저를 사용해서 대용량 정보도 안정적으로 저장한다.
     case appState
     /// 빌드 번호 등 앱의 정보.
     case appInfo

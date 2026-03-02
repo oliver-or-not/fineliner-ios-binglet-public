@@ -1,6 +1,7 @@
 // MARK: - Module Dependency
 
 import SwiftUI
+import Spectrum
 
 // MARK: - Context
 
@@ -19,6 +20,8 @@ struct GameBoardGridWillBeBlockedNodeView: View {
     // MARK: - State
 
     @State var blinkTrigger = false
+
+    // MARK: - View
 
     var body: some View {
         Spacer()
@@ -42,20 +45,9 @@ struct GameBoardGridWillBeBlockedNodeView: View {
                                 height: Constant.gameBoardGridBlockedNodeLinearSize
                             )
                         ZStack {
-                            Capsule()
+                            DS.SymbolImage.nosign
+                                .font(.system(size: 30, weight: .black))
                                 .foregroundStyle(Constant.gameBoardBackgroundColor)
-                                .frame(
-                                    width: Constant.gameBoardGridBlockedNodeCrossMarkLineLength,
-                                    height: Constant.gameBoardGridBlockedNodeCrossMarkLineWidth
-                                )
-                                .rotationEffect(.radians(-(.pi / 4)))
-                            Capsule()
-                                .foregroundStyle(Constant.gameBoardBackgroundColor)
-                                .frame(
-                                    width: Constant.gameBoardGridBlockedNodeCrossMarkLineLength,
-                                    height: Constant.gameBoardGridBlockedNodeCrossMarkLineWidth
-                                )
-                                .rotationEffect(.radians(.pi / 4))
                         }
                     }
                     .compositingGroup()

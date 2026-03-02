@@ -106,7 +106,7 @@ public struct SettingsPlateView: View {
                     }
                 ), label: {
                     Text(String(lKey: .settingsPlateHapticFeedbackSectionTitle))
-                        .font(.system(size: 22))
+                        .font(.system(size: 20))
                         .foregroundStyle(DS.SemanticColor.generalText)
                         .lineLimit(1)
                         .minimumScaleFactor(0.2)
@@ -128,7 +128,7 @@ public struct SettingsPlateView: View {
 
                 HStack {
                     Text(String(lKey: .settingsPlateAppearanceSectionTitle))
-                        .font(.system(size: 22))
+                        .font(.system(size: 20))
                         .foregroundStyle(DS.SemanticColor.generalText)
                     Spacer()
                 }

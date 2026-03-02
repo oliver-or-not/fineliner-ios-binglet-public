@@ -47,6 +47,8 @@ public protocol BasicGameTutorialPlateInterface: GlobalEntity.Plate.Interface, S
 
     func handleGameBoardTap() async
 
+    func handleClockwiseButtonTap() async
+
     /// - Returns: 활성화된 빙글렛을 배치할 방법이 있는지.
     func handlePlaceButtonTap() async -> Bool
 
@@ -120,11 +122,11 @@ fileprivate final actor BasicGameTutorialPlate: NSObject, BasicGameTutorialPlate
         let gameBoardViewData: GameBoardViewData
         let gameBoardBingleEffectViewData: GameBoardBingleEffectViewData?
         let activeBingletContainerViewData: ActiveBingletContainerViewData?
-        let guideBingletContainerViewData: ActiveBingletContainerViewData?
+        let placeButtonContainerViewData: PlaceButtonContainerViewData?
+        let guideBingletContainerViewData: GuideBingletContainerViewData?
         let bingletActivationViewCount: UInt
         let bingletPlacingViewCount: UInt
         let gameBoardHintViewData: GameBoardHintViewData?
-        let placeButtonViewData: PlaceButtonViewData
         let waitingBingletContainerViewDataArray: [WaitingBingletContainerViewData]
         let tutorialCheckArrayCount: Int
         let tutorialGuideDialogViewData: TutorialGuideDialogViewData?
@@ -139,47 +141,56 @@ fileprivate final actor BasicGameTutorialPlate: NSObject, BasicGameTutorialPlate
         case .greeting:
             tutorialGuideDialogViewData = TutorialGuideDialogViewData(
                 text: String(lKey: .basicGameTutorialPlateTutorialGuideDialogGreetingText),
-                buttonVariety: .ok
+                buttonVariety: .ok,
+                hasBackgroundDim: true
             )
         case .movingRequested:
             tutorialGuideDialogViewData = TutorialGuideDialogViewData(
                 text: String(lKey: .basicGameTutorialPlateTutorialGuideDialogMovingRequestedText),
-                buttonVariety: nil
+                buttonVariety: nil,
+                hasBackgroundDim: false
             )
         case .firstBingletPlacingAccomplished:
             tutorialGuideDialogViewData = TutorialGuideDialogViewData(
                 text: String(lKey: .basicGameTutorialPlateTutorialGuideDialogFirstBingletPlacingAccomplishedText),
-                buttonVariety: .ok
+                buttonVariety: .ok,
+                hasBackgroundDim: true
             )
         case .bingleRequested:
             tutorialGuideDialogViewData = TutorialGuideDialogViewData(
                 text: String(lKey: .basicGameTutorialPlateTutorialGuideDialogBingleRequestedText),
-                buttonVariety: nil
+                buttonVariety: nil,
+                hasBackgroundDim: false
             )
         case .bingleAccomplished:
             tutorialGuideDialogViewData = TutorialGuideDialogViewData(
                 text: String(lKey: .basicGameTutorialPlateTutorialGuideDialogBingleAccomplishedText),
-                buttonVariety: .ok
+                buttonVariety: .ok,
+                hasBackgroundDim: true
             )
         case .comboCountExplained:
             tutorialGuideDialogViewData = TutorialGuideDialogViewData(
                 text: String(lKey: .basicGameTutorialPlateTutorialGuideDialogComboCountExplainedText),
-                buttonVariety: .ok
+                buttonVariety: .ok,
+                hasBackgroundDim: true
             )
         case .comboBingleRequested:
             tutorialGuideDialogViewData = TutorialGuideDialogViewData(
                 text: String(lKey: .basicGameTutorialPlateTutorialGuideDialogComboBingleRequestedText),
-                buttonVariety: nil
+                buttonVariety: nil,
+                hasBackgroundDim: false
             )
         case .comboBingleAccomplished:
             tutorialGuideDialogViewData = TutorialGuideDialogViewData(
                 text: String(lKey: .basicGameTutorialPlateTutorialGuideDialogComboBingleAccomplishedText),
-                buttonVariety: .ok
+                buttonVariety: .ok,
+                hasBackgroundDim: true
             )
         case .farewell:
             tutorialGuideDialogViewData = TutorialGuideDialogViewData(
                 text: String(lKey: .basicGameTutorialPlateTutorialGuideDialogFarewellText),
-                buttonVariety: .ok
+                buttonVariety: .ok,
+                hasBackgroundDim: true
             )
         }
 
@@ -238,6 +249,18 @@ fileprivate final actor BasicGameTutorialPlate: NSObject, BasicGameTutorialPlate
         }
 
         if let capturedActiveBingletProcessData {
+            guard let gameBoardHintData = capturedActiveBingletProcessData
+                .gameBoardHintDataCacheMap[capturedActiveBingletProcessData.accumulatedPlacingChoice.toPlacingChoice()] else {
+                await logDirector.plateLog(.basicGameTutorial, .error, "On active binglet process but required data missing.")
+                return
+            }
+            let isPlaceable: Bool
+            switch gameBoardHintData {
+            case .notPlaceable:
+                isPlaceable = false
+            case .placeable:
+                isPlaceable = true
+            }
             if let dragProcessData = capturedActiveBingletProcessData.dragProcessData {
                 activeBingletContainerViewData = ActiveBingletContainerViewData(
                     nodeColor: capturedActiveBingletProcessData.binglet.nodeColor,
@@ -247,6 +270,12 @@ fileprivate final actor BasicGameTutorialPlate: NSObject, BasicGameTutorialPlate
                     diagonalLinkMatrix: capturedActiveBingletProcessData.binglet.diagonalLinkMatrix,
                     accumulatedPlacingChoice: capturedActiveBingletProcessData.accumulatedPlacingChoice,
                     residualTranslation: dragProcessData.residualTranslation
+                )
+                placeButtonContainerViewData = PlaceButtonContainerViewData(
+                    accumulatedPlacingChoice: capturedActiveBingletProcessData.accumulatedPlacingChoice,
+                    residualTranslation: dragProcessData.residualTranslation,
+                    isPlaceButtonVivid: false,
+                    isPlaceable: isPlaceable
                 )
             } else {
                 activeBingletContainerViewData = ActiveBingletContainerViewData(
@@ -258,9 +287,16 @@ fileprivate final actor BasicGameTutorialPlate: NSObject, BasicGameTutorialPlate
                     accumulatedPlacingChoice: capturedActiveBingletProcessData.accumulatedPlacingChoice,
                     residualTranslation: .zero
                 )
+                placeButtonContainerViewData = PlaceButtonContainerViewData(
+                    accumulatedPlacingChoice: capturedActiveBingletProcessData.accumulatedPlacingChoice,
+                    residualTranslation: .zero,
+                    isPlaceButtonVivid: true,
+                    isPlaceable: isPlaceable
+                )
             }
         } else {
             activeBingletContainerViewData = nil
+            placeButtonContainerViewData = nil
         }
 
         switch capturedTutorialState {
@@ -269,14 +305,14 @@ fileprivate final actor BasicGameTutorialPlate: NSObject, BasicGameTutorialPlate
         case .greeting:
             guideBingletContainerViewData = nil
         case .movingRequested:
-            guideBingletContainerViewData = ActiveBingletContainerViewData(
+            guideBingletContainerViewData = GuideBingletContainerViewData(
                 nodeColor: tutorialBingletArray[0].nodeColor,
                 nodeMatrix: tutorialBingletArray[0].nodeMatrix,
                 horizontalLinkMatrix: tutorialBingletArray[0].horizontalLinkMatrix,
                 verticalLinkMatrix: tutorialBingletArray[0].verticalLinkMatrix,
                 diagonalLinkMatrix: tutorialBingletArray[0].diagonalLinkMatrix,
                 accumulatedPlacingChoice: ActiveBingletProcessData.AccumulatedPlacingChoice(
-                    tapCount: 3,
+                    rotationCount: 3,
                     gridOffset: GridVector(x: 2, y: 2)
                 ),
                 residualTranslation: .zero
@@ -284,14 +320,14 @@ fileprivate final actor BasicGameTutorialPlate: NSObject, BasicGameTutorialPlate
         case .firstBingletPlacingAccomplished:
             guideBingletContainerViewData = nil
         case .bingleRequested:
-            guideBingletContainerViewData = ActiveBingletContainerViewData(
+            guideBingletContainerViewData = GuideBingletContainerViewData(
                 nodeColor: tutorialBingletArray[1].nodeColor,
                 nodeMatrix: tutorialBingletArray[1].nodeMatrix,
                 horizontalLinkMatrix: tutorialBingletArray[1].horizontalLinkMatrix,
                 verticalLinkMatrix: tutorialBingletArray[1].verticalLinkMatrix,
                 diagonalLinkMatrix: tutorialBingletArray[1].diagonalLinkMatrix,
                 accumulatedPlacingChoice: ActiveBingletProcessData.AccumulatedPlacingChoice(
-                    tapCount: 0,
+                    rotationCount: 0,
                     gridOffset: GridVector(x: 0, y: 2)
                 ),
                 residualTranslation: .zero
@@ -301,14 +337,14 @@ fileprivate final actor BasicGameTutorialPlate: NSObject, BasicGameTutorialPlate
         case .comboCountExplained:
             guideBingletContainerViewData = nil
         case .comboBingleRequested:
-            guideBingletContainerViewData = ActiveBingletContainerViewData(
+            guideBingletContainerViewData = GuideBingletContainerViewData(
                 nodeColor: tutorialBingletArray[2].nodeColor,
                 nodeMatrix: tutorialBingletArray[2].nodeMatrix,
                 horizontalLinkMatrix: tutorialBingletArray[2].horizontalLinkMatrix,
                 verticalLinkMatrix: tutorialBingletArray[2].verticalLinkMatrix,
                 diagonalLinkMatrix: tutorialBingletArray[2].diagonalLinkMatrix,
                 accumulatedPlacingChoice: ActiveBingletProcessData.AccumulatedPlacingChoice(
-                    tapCount: 0,
+                    rotationCount: 0,
                     gridOffset: GridVector(x: -1, y: 1)
                 ),
                 residualTranslation: .zero
@@ -475,7 +511,6 @@ fileprivate final actor BasicGameTutorialPlate: NSObject, BasicGameTutorialPlate
                 } else {
                     gameBoardHintViewData = nil
                 }
-                placeButtonViewData = .disabled
             case .placeable(let placeableGameBoardHintData): // 배치 가능.
                 guard let duplicatableGameBoardDataWithPlacedBinglet = capturedActiveBingletProcessData
                     .duplicatableGameBoardDataWithPlacedBingletCacheMap[capturedActiveBingletProcessData.accumulatedPlacingChoice.toPlacingChoice()],
@@ -640,7 +675,6 @@ fileprivate final actor BasicGameTutorialPlate: NSObject, BasicGameTutorialPlate
                 } else {
                     gameBoardHintViewData = nil
                 }
-                placeButtonViewData = .enabled
             }
         } else { // active binglet 프로세스가 진행 중이지 않은 경우.
             var nodePlaceViewDataMatrix: Matrix<GameBoardViewData.NodePlaceViewData>
@@ -686,7 +720,6 @@ fileprivate final actor BasicGameTutorialPlate: NSObject, BasicGameTutorialPlate
             )
 
             gameBoardHintViewData = nil
-            placeButtonViewData = .disabled
         }
 
         await MainActor.run {
@@ -694,11 +727,11 @@ fileprivate final actor BasicGameTutorialPlate: NSObject, BasicGameTutorialPlate
             viewModel.gameBoardViewData = gameBoardViewData
             viewModel.gameBoardBingleEffectViewData = gameBoardBingleEffectViewData
             viewModel.activeBingletContainerViewData = activeBingletContainerViewData
+            viewModel.placeButtonContainerViewData = placeButtonContainerViewData
             viewModel.guideBingletContainerViewData = guideBingletContainerViewData
             viewModel.bingletActivationViewCount = bingletActivationViewCount
             viewModel.bingletPlacingViewCount = bingletPlacingViewCount
             viewModel.gameBoardHintViewData = gameBoardHintViewData
-            viewModel.placeButtonViewData = placeButtonViewData
             viewModel.waitingBingletContainerViewDataArray = waitingBingletContainerViewDataArray
             viewModel.tutorialCheckArrayCount = tutorialCheckArrayCount
             viewModel.tutorialGuideDialogViewData = tutorialGuideDialogViewData
@@ -745,7 +778,41 @@ fileprivate final actor BasicGameTutorialPlate: NSObject, BasicGameTutorialPlate
     }
 
     func handleGameBoardTap() async {
-        self.activeBingletProcessData?.accumulatedPlacingChoice.tapCount += 1
+        self.activeBingletProcessData?.accumulatedPlacingChoice.rotationCount += 1
+        guard let capturedActiveBingletProcessData = activeBingletProcessData else { return }
+        let minimalGridOffsetX = Logic.getMinimalGridOffsetX(
+            binglet: capturedActiveBingletProcessData.binglet,
+            rotation: capturedActiveBingletProcessData.accumulatedPlacingChoice.rotation
+        )
+        let maximalGridOffsetX = Logic.getMaximalGridOffsetX(
+            binglet: capturedActiveBingletProcessData.binglet,
+            rotation: capturedActiveBingletProcessData.accumulatedPlacingChoice.rotation
+        )
+        let minimalGridOffsetY = Logic.getMinimalGridOffsetY(
+            binglet: capturedActiveBingletProcessData.binglet,
+            rotation: capturedActiveBingletProcessData.accumulatedPlacingChoice.rotation
+        )
+        let maximalGridOffsetY = Logic.getMaximalGridOffsetY(
+            binglet: capturedActiveBingletProcessData.binglet,
+            rotation: capturedActiveBingletProcessData.accumulatedPlacingChoice.rotation
+        )
+        if capturedActiveBingletProcessData.accumulatedPlacingChoice.gridOffset.x < minimalGridOffsetX {
+            self.activeBingletProcessData?.accumulatedPlacingChoice.gridOffset.x = minimalGridOffsetX
+        }
+        if maximalGridOffsetX < capturedActiveBingletProcessData.accumulatedPlacingChoice.gridOffset.x {
+            self.activeBingletProcessData?.accumulatedPlacingChoice.gridOffset.x = maximalGridOffsetX
+        }
+        if capturedActiveBingletProcessData.accumulatedPlacingChoice.gridOffset.y < minimalGridOffsetY {
+            self.activeBingletProcessData?.accumulatedPlacingChoice.gridOffset.y = minimalGridOffsetY
+        }
+        if maximalGridOffsetY < capturedActiveBingletProcessData.accumulatedPlacingChoice.gridOffset.y {
+            self.activeBingletProcessData?.accumulatedPlacingChoice.gridOffset.y = maximalGridOffsetY
+        }
+        await updateViewModel()
+    }
+
+    func handleClockwiseButtonTap() async {
+        self.activeBingletProcessData?.accumulatedPlacingChoice.rotationCount -= 1
         guard let capturedActiveBingletProcessData = activeBingletProcessData else { return }
         let minimalGridOffsetX = Logic.getMinimalGridOffsetX(
             binglet: capturedActiveBingletProcessData.binglet,
@@ -960,7 +1027,7 @@ fileprivate final actor BasicGameTutorialPlate: NSObject, BasicGameTutorialPlate
         activeBingletProcessData = ActiveBingletProcessData(
             binglet: dequeuedBinglet,
             accumulatedPlacingChoice: ActiveBingletProcessData.AccumulatedPlacingChoice(
-                tapCount: 0,
+                rotationCount: 0,
                 gridOffset: .zero
             ),
             isHintVisible: false,
@@ -1130,7 +1197,7 @@ fileprivate final actor BasicGameTutorialPlate: NSObject, BasicGameTutorialPlate
         activeBingletProcessData = ActiveBingletProcessData(
             binglet: bingletToBeActivated,
             accumulatedPlacingChoice: ActiveBingletProcessData.AccumulatedPlacingChoice(
-                tapCount: 0,
+                rotationCount: 0,
                 gridOffset: .zero
             ),
             isHintVisible: false,

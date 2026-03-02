@@ -160,59 +160,6 @@
         }
       }
     },
-    "basic-game-plate-result-dialog-back-button-title" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Back"
-          }
-        },
-        "es-419" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Volver"
-          }
-        },
-        "fr-CA" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Retour"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "戻る"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "뒤로 가기"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Voltar"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "返回"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "返回"
-          }
-        }
-      }
-    },
     "basic-game-plate-result-dialog-restart-button-title" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -262,6 +209,59 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "重新開始"
+          }
+        }
+      }
+    },
+    "basic-game-plate-result-dialog-share-button-title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Share"
+          }
+        },
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Compartir"
+          }
+        },
+        "fr-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Partager"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "共有する"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "공유하기"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Compartilhar"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "分享"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "分享"
           }
         }
       }
@@ -378,49 +378,49 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Make a bingle to score points. Try it!"
+            "value" : "When connections form a loop, it becomes a bingle. Try making a bingle to score points!"
           }
         },
         "es-419" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Forma un bingle para obtener puntos. ¡Inténtalo!"
+            "value" : "Cuando las conexiones forman un ciclo, se convierte en un bingle. ¡Intenta crear un bingle para obtener puntos!"
           }
         },
         "fr-CA" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Créez un bingle pour marquer des points. Essayez !"
+            "value" : "Quand les connexions forment une boucle, ça devient un bingle. Essayez d'en créer un pour marquer des points !"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "bingle を作ってスコアを獲得しましょう。やってみてください！"
+            "value" : "つながりが輪になると、ビングルになります。ビングルを作ってスコアを獲得してみましょう！"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "bingle을 만들어 점수를 획득해 보세요. 도전해 보세요!"
+            "value" : "연결이 모여 고리를 이루면 빙글이 됩니다. 빙글을 만들어 점수를 획득해 보세요."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Crie um bingle para ganhar pontos. Tente agora!"
+            "value" : "Quando as conexões formam um ciclo, isso se torna um bingle. Tente criar um bingle para ganhar pontos!"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "组合一个 bingle 来获得分数。试试看！"
+            "value" : "当连接形成一个环时，就会变成 bingle。试着创造一个 bingle 来得分吧！"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "組合一個 bingle 來獲得分數。試試看！"
+            "value" : "當連接形成一個環時，就會變成 bingle。試著創造一個 bingle 來得分吧！"
           }
         }
       }
@@ -555,13 +555,13 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "bingle の中のノードは倍率ボーナスを獲得します。"
+            "value" : "ビングルの中のノードは倍率ボーナスを獲得します。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "bingle 안의 노드들은 배수 보너스를 얻습니다."
+            "value" : "빙글 안의 노드들은 배수 보너스를 얻습니다."
           }
         },
         "pt-BR" : {
@@ -590,49 +590,49 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Try to score as many points as you can!"
+            "value" : "Try placing binglets freely to score points. The game ends when there are no more places to put them."
           }
         },
         "es-419" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "¡Intenta conseguir la mayor cantidad de puntos posible!"
+            "value" : "¡Coloca los binglets libremente para obtener puntos! El juego termina cuando no hay más lugares donde colocarlos."
           }
         },
         "fr-CA" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Essayez de marquer le plus de points possible !"
+            "value" : "Placez les binglets librement pour marquer des points. La partie se termine quand il n'y a plus d'endroit où en placer."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "できるだけ多くのポイントを獲得しましょう！"
+            "value" : "自由にビングレットを配置してスコアを稼ぎましょう。これ以上配置できる場所がなくなるとゲーム終了です。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "가능한 한 많은 점수를 획득해 보세요!"
+            "value" : "이제 자유롭게 빙글렛을 배치해서 점수를 얻어보세요. 더 이상 배치할 곳이 없으면 게임이 종료됩니다."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tente marcar o maior número de pontos possível!"
+            "value" : "Coloque os binglets livremente para ganhar pontos. O jogo termina quando não há mais lugares para posicioná-los."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "尽可能多地获得分数吧！"
+            "value" : "自由地放置 binglet 来获得分数吧。当没有更多可以放置的地方时，游戏就会结束。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "盡可能多地獲得分數吧！"
+            "value" : "自由地放置 binglet 來獲得分數吧。當沒有更多可以放置的地方時，遊戲就會結束。"
           }
         }
       }
@@ -714,13 +714,13 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Binglet の世界へようこそ！"
+            "value" : "ビングレットの世界へようこそ！"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Binglet의 세계에 오신 것을 환영합니다!"
+            "value" : "빙글렛의 세계에 오신 것을 환영합니다!"
           }
         },
         "pt-BR" : {
@@ -767,13 +767,13 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ガイドに表示された位置に binglet を配置してみましょう。ゲームボードをドラッグまたはタップして操作できます。"
+            "value" : "ガイドに表示された位置に ビングレットを配置してみましょう。ゲームボードをドラッグまたはタップして操作できます。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "안내된 위치에 binglet을 배치해 보세요. 게임 보드를 드래그하거나 탭해서 조작할 수 있습니다."
+            "value" : "안내된 위치에 빙글렛을 배치해 보세요. 게임 보드를 드래그하거나 탭해서 조작할 수 있습니다."
           }
         },
         "pt-BR" : {

@@ -1,8 +1,8 @@
 // MARK: - Body
 
 extension String {
-
+    
     init(lKey: LocalizableKey) {
-        self.init(localized: lKey.rawValue, table: "Localizable", bundle: .main)
+        self.init(localized: lKey.localizationValue, table: "Localizable", bundle: .main)
     }
 }
